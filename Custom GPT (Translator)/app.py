@@ -1,10 +1,3 @@
-# from langchain_groq import ChatGroq
-# import streamlit as st
-# model = ChatGroq(model="deepseek-r1-distill-llama-70b", api_key="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")
-
-
-# response = model.invoke("hello how are you?")
-# print(response.content)
 
 from langchain_groq import ChatGroq
 import streamlit as st
