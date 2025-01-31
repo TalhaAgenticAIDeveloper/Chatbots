@@ -1,7 +1,10 @@
 
 from langchain_groq import ChatGroq
 import streamlit as st
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+api_key = os.getenv("GROK_API_KEY")
 def translate_text(text, target_language):
     model = ChatGroq(model="deepseek-r1-distill-llama-70b", api_key="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")
     prompt = (
