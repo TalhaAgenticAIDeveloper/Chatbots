@@ -2,3 +2,6 @@ google-generativeai
 streamlit
 openai-whisper 
 pydub
+asyncio
+edge_tts
+pygame

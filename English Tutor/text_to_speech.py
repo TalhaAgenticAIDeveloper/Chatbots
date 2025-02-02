@@ -1,14 +1,7 @@
-import speech_recognition as sr
-import pyttsx3
-import google.generativeai as genai
+
 import asyncio
 import edge_tts
 import pygame
-import os
-import streamlit as st
-
-
-
 
 VOICES = [
     "af-ZA-AdriNeural", "af-ZA-WillemNeural","am-ET-MekdesNeural", "am-ET-AmehaNeural",
@@ -58,45 +51,32 @@ VOICES = [
     "th-TH-NatashaNeural", "th-TH-PattaraNeural","tr-TR-EmelNeural", "tr-TR-AhmetNeural",
     "uk-UA-PolinaNeural", "uk-UA-OstapNeural","ur-PK-UzmaNeural", "ur-PK-AsadNeural",
     "vi-VN-HoaiMyNeural", "vi-VN-NamMinhNeural","zh-CN-XiaoxiaoNeural", "zh-CN-YunxiNeural",
-    "zh-HK-HiuMaanNeural", "zh-HK-WanLungNeural","zh-TW-HsiaoChenNeural"
+    "zh-HK-HiuMaanNeural", "zh-HK-WanLungNeural","zh-TW-HsiaoChenNeural", 
 ]
 
-# set API KEY
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-# select the model
-model = genai.GenerativeModel("gemini-2.0-flash-exp")
-recognizer = sr.Recognizer()
-VOICE = VOICES[2]      # 2nd is for female and 3rd is for male
+
+TEXT = "hello how are you brother"
+# 2nd, is for female
+# 3rd are for male
+VOICE = VOICES[27]
 OUTPUT_FILE = "test_speed.mp3"
 
-
-
-async def amain(TEXT):
+async def amain() -> None:
     communicator = edge_tts.Communicate(TEXT, VOICE)
     await communicator.save(OUTPUT_FILE)
 
-    pygame.mixer.init()
-    pygame.mixer.music.load(OUTPUT_FILE)
-    pygame.mixer.music.play()
+    pygame.mixer.init()  # Initialize pygame mixer
+    pygame.mixer.music.load(OUTPUT_FILE)  # Load the saved audio file
+    pygame.mixer.music.play()  # Play the audio
 
-    while pygame.mixer.music.get_busy():
+    while pygame.mixer.music.get_busy():  # Wait until the music finishes
         pygame.time.Clock().tick(10)
 
-while True:
-    try:
-        with sr.Microphone() as mic:
-            recognizer.adjust_for_ambient_noise(mic, duration=0.2)  
-            audio = recognizer.listen(mic)
-            text = recognizer.recognize_google(audio).lower()
 
-            response = model.generate_content(text)
-            TEXT = response.text if response else ""
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
-            if TEXT:
-                asyncio.run(amain(TEXT))
-
-    except sr.UnknownValueError:
-        pass  # Ignore unrecognized speech and continue
-    except KeyboardInterrupt:
-        print("\nExiting...")
-        break
+try:
+    loop.run_until_complete(amain())
+finally:
+    loop.close()
